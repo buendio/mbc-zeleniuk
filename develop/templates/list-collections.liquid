@@ -1,0 +1,14 @@
+<ul class="catalog">
+    {% for collection in collections %}
+  
+    {% unless collection.handle == 'frontpage' %}
+  	<li>
+      {% if collection.image %}
+        {{ collection.image | img_url: '400x' | img_tag }}
+      {% endif %}
+      <a href="{{ collection.url }}">{{ collection.title }}</a>
+  	</li>
+  	
+    {% endunless %}
+    {% endfor %}
+</ul>

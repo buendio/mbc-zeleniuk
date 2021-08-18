@@ -1,0 +1,111 @@
+    <header>
+        <button class="mob">
+            <svg width="32" height="17" viewBox="0 0 32 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="0.5" y1="0.5" x2="31.5" y2="0.5" stroke="#202020" stroke-linecap="round"/>
+                <line x1="0.5" y1="8.5" x2="24.5" y2="8.5" stroke="#202020" stroke-linecap="round"/>
+                <line x1="0.5" y1="16.5" x2="31.5" y2="16.5" stroke="#202020" stroke-linecap="round"/>
+            </svg>
+        </button>
+        <a href="{{ routes.root_url }}" class="logo"><img src="{{ 'logo.svg' | asset_url }}" alt="logo"></a>
+        <nav>
+            <ul class="nav">
+
+              	{% for link in linklists.vikings.links %}
+                    <li>
+                        <a href="{{ link.url }}" {% if link.active %}class="active"{% endif %}>{{ link.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <button class="search">
+                <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="9.23898" cy="9.23898" r="8.73898" />
+                    <line x1="15.7519" y1="15.0447" x2="24.3536" y2="23.6464" />
+                </svg>
+            </button>
+            <button class="cart">
+                <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 1H3.0374L6.42424 17.7756C6.45112 18.4521 6.98872 18.9932 7.66071 18.9932H23.9498" />
+                    <path d="M3.5 3.81398H22.9015C23.3316 3.81398 23.7079 3.97632 23.9767 4.30101C24.2186 4.6257 24.3261 5.03157 24.2455 5.46449L22.7133 13.5006C22.5521 14.3664 21.7188 15.0428 20.8586 15.0699H5.86646" />
+                    <path d="M8.34888 22.8354C8.34888 21.9179 9.09579 21.1708 9.99925 21.1708C10.9027 21.1708 11.6496 21.9179 11.6496 22.8354C11.6496 23.7529 10.9027 24.5 9.99925 24.5C9.09579 24.5 8.34888 23.7529 8.34888 22.8354Z" />
+                    <path d="M18.2675 22.8354C18.2675 21.9179 19.0144 21.1708 19.9178 21.1708C20.8213 21.1708 21.5682 21.9179 21.5682 22.8354C21.5682 23.7529 20.8213 24.5 19.9178 24.5C19.0144 24.5 18.2675 23.7529 18.2675 22.8354Z" />
+                </svg>
+                <span>{{ cart.item_count }}</span>
+            </button>
+        </nav>
+    </header>
+    <div class="navMob">
+        <button class="navMob__close">
+            <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="1.35355" y1="0.646452" x2="25.3535" y2="24.6464" stroke="white"/>
+                <line x1="0.646447" y1="24.6464" x2="24.6464" y2="0.646442" stroke="white"/>
+            </svg>
+        </button>
+        <form action="" class="navMob__serach">
+            <input type="search" placeholder="Type your search">
+            <button type="submit">
+                <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g opacity="0.33">
+                    <circle cx="9.23898" cy="9.23898" r="8.73898" stroke="white"/>
+                    <line x1="15.7517" y1="15.0447" x2="24.3535" y2="23.6464" stroke="white"/>
+                    </g>
+                </svg>
+            </button>
+        </form>
+        <ul class="navMob__ul">
+            {% for link in linklists.vikings.links %}
+                    <li>
+                        <a href="{{ link.url }}" {% if link.active %}class="active"{% endif %}>{{ link.title }}</a>
+                    </li>
+             {% endfor %}
+        </ul>
+    </div>
+    <div id="CartDrawer" class="drawer">
+
+            <div class="drawer__head">
+                Cart ({{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }})
+                <button class="drawer__close">
+                    <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="1.35355" y1="0.646452" x2="25.3535" y2="24.6464" stroke="#202020"/>
+                        <line x1="0.646447" y1="24.6464" x2="24.6464" y2="0.646442" stroke="#202020"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="drawer__body">
+                <form action="" class="ajaxcart">
+                    <div class="ajaxcart__inner">
+                      {% for item in cart.items %}
+                        <div class="ajaxcart__product ajaxcart__product_{{item.variant.id}}">
+                            <img src="img/Rectangle 2.png" alt="" class="ajaxcart__img">
+                            <div>
+                                <div class="ajaxcart__description">
+                                    {{ item.title }}
+                                </div>
+                                <div class="ajaxcart__price">
+                                    <span>${{ item.price }}</span>
+                                    <span></span>
+                                </div>
+                                <div class="ajaxcart__qty">
+                                    <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_minus">-</button>
+                                    <input type="text"  class="ajaxcart__qtyNum" value="1" min="0" pattern="[0-9]*">
+                                    <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_plus">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                      {% endfor %}
+                    </div>
+                    <div class="ajaxcart__footer">
+                        <div class="ajaxcart__total">
+                            <span>Subtotal</span>
+                            <span>${{cart.total_price}}</span>
+
+                        </div>
+                        <div class="dflex">
+                            <a href="" class="toCart">View cart</a>
+                            <button type="submit" class="mainBtn">Proceed to checkout</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+    </div>
