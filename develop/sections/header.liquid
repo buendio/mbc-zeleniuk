@@ -1,3 +1,4 @@
+
     <header>
         <button class="mob">
             <svg width="32" height="17" viewBox="0 0 32 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,15 +23,32 @@
                     <line x1="15.7519" y1="15.0447" x2="24.3536" y2="23.6464" />
                 </svg>
             </button>
-            <button class="cart">
+            <button  class="cart cartJs">
                 <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 1H3.0374L6.42424 17.7756C6.45112 18.4521 6.98872 18.9932 7.66071 18.9932H23.9498" />
                     <path d="M3.5 3.81398H22.9015C23.3316 3.81398 23.7079 3.97632 23.9767 4.30101C24.2186 4.6257 24.3261 5.03157 24.2455 5.46449L22.7133 13.5006C22.5521 14.3664 21.7188 15.0428 20.8586 15.0699H5.86646" />
                     <path d="M8.34888 22.8354C8.34888 21.9179 9.09579 21.1708 9.99925 21.1708C10.9027 21.1708 11.6496 21.9179 11.6496 22.8354C11.6496 23.7529 10.9027 24.5 9.99925 24.5C9.09579 24.5 8.34888 23.7529 8.34888 22.8354Z" />
                     <path d="M18.2675 22.8354C18.2675 21.9179 19.0144 21.1708 19.9178 21.1708C20.8213 21.1708 21.5682 21.9179 21.5682 22.8354C21.5682 23.7529 20.8213 24.5 19.9178 24.5C19.0144 24.5 18.2675 23.7529 18.2675 22.8354Z" />
                 </svg>
-                <span>{{ cart.item_count }}</span>
+                <div id="" class="CartCount" style="display: flex;
+                                                                            justify-content: center;
+                                                                            align-items: center;
+                                                                            position: absolute;
+                                                                            top: -8px;
+                                                                            right: -8px;
+                                                                            width: 16px;
+                                                                            height: 16px;
+                                                                            border-radius: 50%;
+                                                                            background: #CC0000;
+                                                                            font-size: 9px;
+                                                                            color: #fff;">
+                    {{ cart.item_count }}
+                </div>
+                {% comment %} <div id="cart-price">
+                    <span  class="cart-count">{{ cart.total_price }}</span>
+                </div> {% endcomment %}
             </button>
+
         </nav>
     </header>
     <div class="navMob">
@@ -59,10 +77,16 @@
              {% endfor %}
         </ul>
     </div>
+
+
     <div id="CartDrawer" class="drawer">
 
-            <div class="drawer__head">
-                Cart ({{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }})
+            <div  class="drawer__head">
+            <div>
+                Cart(<span id="CartCount" class="CartCount">{{ cart.item_count }}</span> {% if cart.item_count < 1 %} item {% else %} items {% endif %})
+            </div>
+
+
                 <button class="drawer__close">
                     <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="1.35355" y1="0.646452" x2="25.3535" y2="24.6464" stroke="#202020"/>
@@ -70,24 +94,26 @@
                     </svg>
                 </button>
             </div>
-            <div class="drawer__body">
-                <form action="" class="ajaxcart">
+
+             <div class="drawer__body">
+             <div id="CartContainer"></div>
+                {% comment %} <form action="/cart" method="post" class="ajaxcart">
                     <div class="ajaxcart__inner">
                       {% for item in cart.items %}
                         <div class="ajaxcart__product ajaxcart__product_{{item.variant.id}}">
-                            <img src="img/Rectangle 2.png" alt="" class="ajaxcart__img">
+                            <img src="{{ item | img_url }}" alt="{{ item.title | escape }}" class="ajaxcart__img">
                             <div>
                                 <div class="ajaxcart__description">
-                                    {{ item.title }}
+                                    {{ item.product.title }}
                                 </div>
                                 <div class="ajaxcart__price">
-                                    <span>${{ item.price }}</span>
+                                    <span>${{ item.price | divided_by: 100.00  }}</span>
                                     <span></span>
                                 </div>
                                 <div class="ajaxcart__qty">
-                                    <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_minus">-</button>
-                                    <input type="text"  class="ajaxcart__qtyNum" value="1" min="0" pattern="[0-9]*">
-                                    <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_plus">+</button>
+                                    <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_minus" style="display:none;">-</button>
+                                    <input   class="ajaxcart__qtyNum" type="number" name="quantity" value="{{ cart.item_count }}" min="1">
+                                    <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_plus" style="display:none;">+</button>
                                 </div>
                             </div>
                         </div>
@@ -97,15 +123,16 @@
                     <div class="ajaxcart__footer">
                         <div class="ajaxcart__total">
                             <span>Subtotal</span>
-                            <span>${{cart.total_price}}</span>
-
+                                            <div id="cart-price">
+                                                <span id="CartCost"  class="cart-count">${{ cart.total_price | divided_by: 100.00 }}</span>
+                                            </div>
                         </div>
                         <div class="dflex">
-                            <a href="" class="toCart">View cart</a>
-                            <button type="submit" class="mainBtn">Proceed to checkout</button>
+                            <a href="/cart" class="toCart">View cart</a>
+                            <button type="submit" class="mainBtn" name="checkout">Proceed to checkout</button>
                         </div>
                     </div>
 
-                </form>
+                </form> {% endcomment %}
             </div>
     </div>

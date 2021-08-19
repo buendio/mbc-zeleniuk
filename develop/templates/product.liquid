@@ -19,20 +19,13 @@
 
                 </div>
             </div>
-            <form action="/cart/add" method="post" enctype="multipart/form-data" class="product__item">
+            <form action="/cart/add" method="post" enctype="multipart/form-data" class="product__item" id="AddToCartForm">
           		<h2 class="product__title">{{ product.title }}</h2>
                 <div class="product__option">
                     <h3 class="product__optionTitle">
                         Choose your length
                     </h3>
-
-<!--                    <select class="select selectSizeHide" name="size">
-                        <option disabled>60 CM (24 INCHES)</option>
-                        <option value="WOMEN’s 9">60 CM (24 INCHES)</option>
-                        <option value="WOMEN’s 11">WOMEN’s 11</option>
-                        <option value="WOMEN’s 21">WOMEN’s 21</option>
-                    </select> -->
-					{{product.selected_or_first_available_variant}}
+					{% comment %} {{product.selected_or_first_available_variant}} {% endcomment %}
                   <select name="id" class="select">
                     <option disabled>select size</option>
                      {% for variant in product.variants %}
@@ -54,16 +47,16 @@
                 </div>
 
                 <div class="product__price">
-                    <span>${{ product.price | divided_by: 100.00  }}</span>
-                    <span>Tax included</span>{{ itemQty }}
+                    <span>{{ product.price | money }}</span>
+                    <span>Tax included</span>
                 </div>
                 <div class="dflex dflex_btnWrap">
-                    <div class="ajaxcart__qty">
-                        <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_minus">-</button>
-                        <input type="text"  class="ajaxcart__qtyNum" value="1" min="0" pattern="[0-9]*">
-                        <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_plus">+</button>
+                    <div class="">
+                        <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_minus "  style="display:none;">-</button>
+                        <input type="number"  class="ajaxcart__qtyNum" value="1" min="1" name="quantity" style="display:none;">
+                        <button type="button" class="ajaxcart__qtyBtn ajaxcart__qtyBtn_plus" style="display:none;">+</button>
                     </div>
-                    <input type="submit" name="add" id="add" value="Add to Cart" class="button mainBtn">
+                    <input type="submit" name="add" id="AddToCart" value="Add to Cart" class="button mainBtn ajax_add_to_cart_btn">
                 </div>
                  <div class="product__text">
                     {{ product.description }}
