@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
   /////////////////mob nav///////////////////////////////
 
 	//$('#CartDrawer').hide();//?
-     $('.cart').on('click', function(){
+     $('.cartJs').on('click', function(){
+
        $('html').toggleClass('vis');
       $('body').toggleClass('overlay');
        $('#CartDrawer').toggleClass('active');
@@ -93,7 +94,7 @@ $('.slider-nav').slick({
   focusOnSelect: true
 });
 /////////////////////////////////
-$('.ajaxcart__qtyBtn_minus').click(function () {
+{% comment %} $('.ajaxcart__qtyBtn_minus').click(function () {
     var $input = $(this).parent().find('input');
     var count = parseInt($input.val()) - 1;
     count = count < 1 ? 1 : count;
@@ -106,5 +107,13 @@ $('.ajaxcart__qtyBtn_plus').click(function () {
     $input.val(parseInt($input.val()) + 1);
     $input.change();
     return false;
-});
+}); {% endcomment %}
+
+const cartContents = fetch('/cart.js')
+  .then(response => response.json())
+  .then(data => { return data });
+
+
+
+
 }); // end DOMContentLoaded
