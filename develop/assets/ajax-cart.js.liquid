@@ -36,6 +36,7 @@ function attributeToString(attribute) {
 ==============================================================================*/
 ShopifyAPI.onCartUpdate = function(cart) {
   // alert('There are now ' + cart.item_count + ' items in the cart.');
+  console.log('up')
 };
 
 ShopifyAPI.updateCartNote = function(note, callback) {
@@ -114,7 +115,25 @@ ShopifyAPI.addItemFromForm = function(form, callback, errorCallback) {
   };
   jQuery.ajax(params);
 };
+function changeCart(lis,value = 0,elem){
+  var data = new FormData();
+        data.append("id", lis);
+        data.append("quantity",value)
 
+        fetch("/cart/change.js",
+        {
+            method: "POST",
+            body: data
+        })
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+
+
+            ShopifyAPI.onCartUpdate(cart);(data)
+
+           })
+
+}
 // Get from cart.js returns the cart in JSON
 ShopifyAPI.getCart = function(callback) {
   $(document.body).trigger('beforeGetCart.ajaxCart');
@@ -126,21 +145,18 @@ ShopifyAPI.getCart = function(callback) {
       ShopifyAPI.onCartUpdate(cart);
     }
     $(document.body).trigger('afterGetCart.ajaxCart', cart);
-    console.log($('.ajaxcart__description').text())
     $('.removesss').on('click', function() {
-
        params = {
-    type: 'POST',
-    url: '/cart/change?line=1&quantity=0',
-     success: function() {
-       location.reload()
-     },
-
-
-  };
-  jQuery.ajax(params);
+        type: 'POST',
+        url: '/cart/change?line=1&quantity=0',
+        success: function(cart) {
+   cartUpdateCallback(cart)
+      },
+       };
+      jQuery.ajax(params);
        //$.get("/cart/change?line=1&quantity=0");
     })
+
   });
 };
 
