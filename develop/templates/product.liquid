@@ -27,15 +27,16 @@
                     </h3>
 					{% comment %} {{product.selected_or_first_available_variant}} {% endcomment %}
                   <select name="id" class="select">
-                    <option disabled>select size</option>
+                       <option disabled>{{ batches  }}</option>
                      {% for variant in product.variants %}
+                        {% assign batches = variant.price | money %}
 
                         {% if variant.available %}
                           <option {% if variant == product.selected_or_first_available_variant %}
                             selected="selected" {% endif %}
                             data-sku="{{ variant.sku }}"
                             value="{{ variant.id }}">
-                            {{ variant.title }}
+                            {{ variant.title }} {{ variant.price | money_with_currency }}
                           </option>
                         {% else %}
                           <option disabled="disabled">
@@ -47,7 +48,7 @@
                 </div>
 
                 <div class="product__price">
-                    <span>{{ product.price | money }}</span>
+                    <span>{{ batches  }}</span>
                     <span>Tax included</span>
                 </div>
                 <div class="dflex dflex_btnWrap">
@@ -64,4 +65,7 @@
 			</form>
 
         </div>
+
+      {% section 'product-advice' %}
+
     </section>

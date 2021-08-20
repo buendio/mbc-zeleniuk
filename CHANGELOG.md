@@ -11,3 +11,7 @@
 ## [1.1.0] - 2021-08-19
 ### Added
 -Add ajax cart
+
+## [1.2.0] - 2021-08-20
+### Added
+-Add block recomendation
