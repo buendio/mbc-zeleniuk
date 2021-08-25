@@ -10,18 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   /////////////////mob nav///////////////////////////////
 
-	//$('#CartDrawer').hide();//?
      $('.cartJs').on('click', function(){
 
        $('html').toggleClass('vis');
-      $('body').toggleClass('overlay');
+       $('body').toggleClass('overlay');
        $('#CartDrawer').toggleClass('active');
-      });
+    });
+
      $('.drawer__close').on('click', function(){
+
        $('html').toggleClass('vis');
-      $('body').toggleClass('overlay');
+       $('body').toggleClass('overlay');
        $('#CartDrawer').toggleClass('active');
-      });
+    });
 ////////////////////////////////////////////////
 $('.select').each(function() {
       const _this = $(this),
@@ -32,9 +33,11 @@ $('.select').each(function() {
 
         _this.hide();
         _this.wrap('<div class="select"></div>');
+        let name = _this.children('option')[0].text
+        let val = _this.children('option')[0].value
         $('<div>', {
             class: 'new-select',
-            text: _this.children('option:disabled').text()
+            text: name
         }).insertAfter(_this);
 
         const selectHead = _this.next('.new-select');
@@ -42,29 +45,42 @@ $('.select').each(function() {
             class: 'new-select__list'
         }).insertAfter(selectHead);
 
- const selectList = selectHead.next('.new-select__list');
+        const selectList = selectHead.next('.new-select__list');
+
         for (let i = 1; i < selectOptionLength; i++) {
             $('<div>', {
                     class: 'new-select__item',
                     html: $('<span>', {
-                        text: selectOption.eq(i).text()
+                        text: selectOption[i].attributes[2].textContent
                     })
                 })
+                .attr('data-price', selectOption[i].attributes[1].textContent)
                 .attr('data-value', selectOption.eq(i).val())
+                .attr('data-title', selectOption[i].attributes[2].textContent)
                 .appendTo(selectList);
         }
+        $('<div>', {
+            class: 'new-select__item',
+            html: $('<span>', {
+                text: name
+            })
+        })
+        .attr('data-value', val)
+        .prependTo(selectList);
 
         const selectItem = selectList.find('.new-select__item');
         selectList.slideUp(0);
-   selectHead.on('click', function() {
+        selectHead.on('click', function() {
             if (!$(this).hasClass('on')) {
                 $(this).addClass('on');
                 selectList.slideDown(duration);
 
                 selectItem.on('click', function() {
-                    let chooseItem = $(this).data('value');
-
-                    $('select').val(chooseItem).attr('selected', 'selected');
+                    let chooseItem = $(this).data('title');
+                    let price = $(this).data('price');
+                    let id = $(this).data('value');
+                    $('#ProductPrice').html(price)
+                    $('select').val(id).attr('selected', 'selected');
                     $(_this.wrap()).trigger("change");
                     selectHead.text($(this).find('span').text());
 
@@ -94,20 +110,7 @@ $('.slider-nav').slick({
   focusOnSelect: true
 });
 /////////////////////////////////
-{% comment %} $('.ajaxcart__qtyBtn_minus').click(function () {
-    var $input = $(this).parent().find('input');
-    var count = parseInt($input.val()) - 1;
-    count = count < 1 ? 1 : count;
-    $input.val(count);
-    $input.change();
-    return false;
-});
-$('.ajaxcart__qtyBtn_plus').click(function () {
-    var $input = $(this).parent().find('input');
-    $input.val(parseInt($input.val()) + 1);
-    $input.change();
-    return false;
-}); {% endcomment %}
+
 
 const cartContents = fetch('/cart.js')
   .then(response => response.json())

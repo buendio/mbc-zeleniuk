@@ -34,10 +34,7 @@ function attributeToString(attribute) {
 /*============================================================================
   API Functions
 ==============================================================================*/
-ShopifyAPI.onCartUpdate = function(cart) {
-  // alert('There are now ' + cart.item_count + ' items in the cart.');
-  console.log('up')
-};
+
 
 ShopifyAPI.updateCartNote = function(note, callback) {
   var $body = $(document.body),
@@ -98,6 +95,22 @@ ShopifyAPI.addItemFromForm = function(form, callback, errorCallback) {
       else {
         ShopifyAPI.onItemAdded(line_item, form);
       }
+
+      setTimeout(function() {
+        $('body').toggleClass('overlay');
+        $('#CartDrawer').toggleClass('active')
+      }, 500)
+
+      let t = setTimeout(function() {
+        $('body').toggleClass('overlay');
+        $('#CartDrawer').toggleClass('active')
+      }, 4000)
+      $('#CartDrawer').on('mouseover', function(){
+        if(t!=null)
+          {
+              clearTimeout(t);
+          }
+       });
       $body.trigger('afterAddItem.ajaxCart', [line_item, form]);
     },
     error: function(XMLHttpRequest, textStatus) {
@@ -115,25 +128,7 @@ ShopifyAPI.addItemFromForm = function(form, callback, errorCallback) {
   };
   jQuery.ajax(params);
 };
-function changeCart(lis,value = 0,elem){
-  var data = new FormData();
-        data.append("id", lis);
-        data.append("quantity",value)
 
-        fetch("/cart/change.js",
-        {
-            method: "POST",
-            body: data
-        })
-        .then(function(res){ return res.json(); })
-        .then(function(data){
-
-
-            ShopifyAPI.onCartUpdate(cart);(data)
-
-           })
-
-}
 // Get from cart.js returns the cart in JSON
 ShopifyAPI.getCart = function(callback) {
   $(document.body).trigger('beforeGetCart.ajaxCart');
@@ -145,15 +140,28 @@ ShopifyAPI.getCart = function(callback) {
       ShopifyAPI.onCartUpdate(cart);
     }
     $(document.body).trigger('afterGetCart.ajaxCart', cart);
+
     $('.removesss').on('click', function() {
-       params = {
-        type: 'POST',
-        url: '/cart/change?line=1&quantity=0',
-        success: function(cart) {
-   cartUpdateCallback(cart)
-      },
-       };
-      jQuery.ajax(params);
+     console.log( $(this).data("id"))
+     let v = $(this).data("id")
+     let value = 0;
+      var data = new FormData();
+        data.append("id", v);
+        data.append("quantity",value);
+
+        fetch("/cart/change.js",
+        {
+            method: "POST",
+            body: data
+        })
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+
+          setTimeout(function() {
+            isUpdating = false;
+            ShopifyAPI.getCart(data);
+          }, 150)
+        })
        //$.get("/cart/change?line=1&quantity=0");
     })
 
@@ -209,7 +217,12 @@ var ajaxCart = (function(module, $) {
 
   // Private functions
   var updateCountPrice, formOverride, itemAddedCallback, itemErrorCallback, cartUpdateCallback, buildCart, cartCallback, adjustCart, adjustCartCallback, createQtySelectors, qtySelectors, validateQty;
-
+  ShopifyAPI.onCartUpdate = function(cart) {
+    // alert('There are now ' + cart.item_count + ' items in the cart.');
+    console.log('up')
+    buildCart(cart)
+    updateCountPrice(cart);
+  };
   /*============================================================================
     Initialise the plugin and define global options
   ==============================================================================*/
@@ -275,6 +288,20 @@ var ajaxCart = (function(module, $) {
       $cartCostSelector.html(Shopify.formatMoney(cart.total_price, settings.moneyFormat));
     }
   };
+
+  // updateCountTotal = function (cart) {
+  //   if ($cartCountSelector) {
+  //     $cartCountSelector.html(cart.item_count).removeClass('hidden-count');
+
+  //     if (cart.item_count === 0) {
+  //       $cartCountSelector.addClass('hidden-count');
+  //     }
+  //   }
+  //   if ($cartCostSelector) {
+  //     $cartCostSelector.html(Shopify.formatMoney(cart.total_price, settings.moneyFormat));
+  //   }
+  //   console.log(cart.total_price);
+  // };
 
   formOverride = function () {
     $formContainer.on('submit', function(evt) {

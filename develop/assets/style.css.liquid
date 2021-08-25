@@ -519,6 +519,9 @@ main::before {
   -o-transition: all 0.4s;
   transition: all 0.4s;
 }
+.new-select.on::before  {
+  transform: translateY(-50%) rotate(180deg);
+}
 .new-select__list {
   width: 293px;
   border: 1px solid #D8D8D8;
@@ -603,6 +606,7 @@ main::before {
   align-items: center;
   flex-wrap:wrap;
 }
+
 /*-------------------END MAIN----------------------------------------*/
 /*~~~~~~~~~~~~~~~~~~~MEDIA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 @media only screen and (max-width: 1500px) {

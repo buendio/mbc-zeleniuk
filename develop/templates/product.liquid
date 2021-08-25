@@ -1,5 +1,6 @@
 
     <section class="product">
+      {% assign current_variant = product.selected_or_first_available_variant %}
         <div class="product__wrap">
             <div class="productJs">
                 <div class="slider-for">
@@ -26,8 +27,10 @@
                         Choose your length
                     </h3>
 					{% comment %} {{product.selected_or_first_available_variant}} {% endcomment %}
-                  <select name="id" class="select">
-                       <option disabled>{{ batches  }}</option>
+
+                  <select name="id" class="select" value="">
+                       <!-- <option disabled>choose your size</option> -->
+
                      {% for variant in product.variants %}
                         {% assign batches = variant.price | money %}
 
@@ -35,8 +38,10 @@
                           <option {% if variant == product.selected_or_first_available_variant %}
                             selected="selected" {% endif %}
                             data-sku="{{ variant.sku }}"
+                            data-price="{{ variant.price | money }}"
+                            data-title="{{ variant.title }}"
                             value="{{ variant.id }}">
-                            {{ variant.title }} {{ variant.price | money_with_currency }}
+                            {{ variant.title }}
                           </option>
                         {% else %}
                           <option disabled="disabled">
@@ -48,7 +53,9 @@
                 </div>
 
                 <div class="product__price">
-                    <span>{{ batches  }}</span>
+                  <span id="ProductPrice">
+                    {{ current_variant.price | money }}
+                  </span>
                     <span>Tax included</span>
                 </div>
                 <div class="dflex dflex_btnWrap">
